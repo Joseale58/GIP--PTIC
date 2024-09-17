@@ -13,3 +13,15 @@ class DataUploadService:
         # Esto para poder llamar la función: DataUploadRepository.insert() y pasarle ese arreglo en vez del vacío
 
         return DataUploadRepository.insert([])
+    
+
+    #Método de e.g. insertar usuario
+    @staticmethod
+    def insert_user(user):
+        #Se deben todas las validaciones correspondientes
+        return DataUploadRepository.insert_user(user)
+    
+    #Método de e.g. para traer todos los usuarios
+    @staticmethod
+    def get_data():
+        return DataUploadRepository.get()
