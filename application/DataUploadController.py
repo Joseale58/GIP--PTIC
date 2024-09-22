@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from fastapi import UploadFile, APIRouter
+from fastapi import UploadFile, APIRouter, HTTPException
 from pandas import read_excel
 
 from domain.DataUploadService import DataUploadService
@@ -11,10 +11,13 @@ DataUploadController = APIRouter(prefix="/data-upload")
 
 @DataUploadController.post("/")
 async def data_upload(rips: UploadFile, monthly: UploadFile):
-    rips_file = await rips.read()
-    rips_df = read_excel(BytesIO(rips_file))
-    monthly_file = await monthly.read()
-    monthly_df = read_excel(BytesIO(monthly_file))
+    try:
+        rips_file = await rips.read()
+        rips_df = read_excel(BytesIO(rips_file))
+        monthly_file = await monthly.read()
+        monthly_df = read_excel(BytesIO(monthly_file))
+    except:
+        raise HTTPException(status_code=404, detail="Error procesando los archivos enviados")
 
     return DataUploadService.clean_data(rips_df, monthly_df)
 
