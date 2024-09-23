@@ -3,6 +3,7 @@ from fastapi import HTTPException
 import pandas as pd
 from infrastructure.DataUploadRepository import DataUploadRepository
 from core import domain_constants as constants
+from cie.cie10 import CIECodes
 
 import os 
 url = os.environ.get("LOCAL_URL_TO_EXCEL")
@@ -119,8 +120,20 @@ class DataUploadService:
             data = data.drop('valor de la consulta',axis=1)
             data = data.drop('valor cuota moderadora',axis=1)
             data = data.drop('valor neto a pagar',axis=1)
-            print(data.info())
+            #print(data.info())
 
+            cie = CIECodes()
+            cie_dict = {}
+
+            for code, content in cie.tree.items():
+                full_info = cie.info(code=code)  # Cargar la propiedad 'multiple_descriptions'
+
+                # Verificar que 'full_info' y 'description' existan antes de asignar
+                if full_info and 'description' in full_info:
+                    cie_dict[code] = full_info['description']  # Asignar directamente la descripción
+
+            data['Descripcion dx principal'] = data['cod dx principal'].map(cie_dict)
+            
             data.to_excel(url, index=False)
 
             # Acá te mando los dos dataframes que se envían de los archivos de excel
