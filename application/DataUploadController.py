@@ -16,7 +16,10 @@ async def data_upload(rips: UploadFile, monthly: UploadFile):
         rips_df = read_excel(BytesIO(rips_file))
         monthly_file = await monthly.read()
         monthly_df = read_excel(BytesIO(monthly_file))
-    except:
+    except HTTPException as e:
+        # Captura las excepciones HTTP lanzadas desde el servicio
+        raise e
+    except Exception as e:
         raise HTTPException(status_code=404, detail="Error procesando los archivos enviados")
 
     return DataUploadService.clean_data(rips_df, monthly_df)
