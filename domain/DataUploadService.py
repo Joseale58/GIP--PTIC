@@ -126,7 +126,7 @@ class DataUploadService:
             # Acá te mando los dos dataframes que se envían de los archivos de excel
             # Leete el readme de como probar esto desde un postman
 
-            return DataUploadRepository.insert([])
+            return DataUploadRepository.insert(data)
         
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error interno durante la limpieza de datos: {str(e)}")
