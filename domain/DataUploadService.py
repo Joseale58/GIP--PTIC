@@ -1,11 +1,11 @@
 from pandas import DataFrame 
 from fastapi import HTTPException
 import pandas as pd
-
 from infrastructure.DataUploadRepository import DataUploadRepository
-
 from core import domain_constants as constants
 
+import os 
+url = os.environ.get("LOCAL_URL_TO_EXCEL")
 
 class DataUploadService:
     @staticmethod
@@ -121,7 +121,7 @@ class DataUploadService:
             data = data.drop('valor neto a pagar',axis=1)
             print(data.info())
 
-            data.to_excel("C:/Users/josea/OneDrive/Desktop/PTIC/archivo.xlsx", index=False)
+            data.to_excel(url, index=False)
 
             # Acá te mando los dos dataframes que se envían de los archivos de excel
             # Leete el readme de como probar esto desde un postman
