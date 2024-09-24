@@ -122,18 +122,30 @@ class DataUploadService:
             data = data.drop('valor neto a pagar',axis=1)
             #print(data.info())
 
+            print("Llego hasta acá")
             cie = CIECodes()
+            print("Que pasa acá")
+            print(cie.info(code='X511'))
+            print(cie.info(code='C02.0'))
+
             cie_dict = {}
+
+            print(cie)
 
             for code, content in cie.tree.items():
                 full_info = cie.info(code=code)  # Cargar la propiedad 'multiple_descriptions'
-
+                
                 # Verificar que 'full_info' y 'description' existan antes de asignar
                 if full_info and 'description' in full_info:
                     cie_dict[code] = full_info['description']  # Asignar directamente la descripción
 
             data['Descripcion dx principal'] = data['cod dx principal'].map(cie_dict)
+            #Convertimos el tipo de fecha
             
+            # Convertir las fechas en el DataFrame 'data' a formato YYYY-MM-DD
+            data['fecha de consulta'] = pd.to_datetime(data['fecha de consulta'], format='%d/%m/%Y', errors='coerce')
+            data['Fecha Nacimiento'] = pd.to_datetime(data['Fecha Nacimiento'], format='%d/%m/%Y', errors='coerce')
+
             data.to_excel(url, index=False)
 
             # Acá te mando los dos dataframes que se envían de los archivos de excel

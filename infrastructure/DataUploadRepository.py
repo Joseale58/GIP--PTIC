@@ -4,6 +4,7 @@ from infrastructure.models.ConsultationModel import Consultation
 from pandas import DataFrame 
 from dotenv import load_dotenv
 load_dotenv()
+from core import infrastructure_constants as constants
 
 
 import os 
@@ -17,22 +18,29 @@ supabase: Client = create_client(url, key)
 class DataUploadRepository:
     @staticmethod
     def insert(data : DataFrame):
-        for index, row in data.iterrows():
-            row_dic = row.to_dict()  # Convertir la fila a diccionario
+        try:
+            # Convertir las columnas de tipo fecha a formato de texto (string) para ser JSON serializable
+            for col in data.select_dtypes(include=['datetime64[ns]', 'datetime64[ns, UTC]']).columns:
+                data[col] = data[col].dt.strftime('%Y-%m-%d')  # Convertir a formato 'YYYY-MM-DD'
+            
+            # Insertar cada fila en la tabla de Supabase
+            for index, row in data.iterrows():
+                row_dic = row.to_dict()  # Convertir la fila a diccionario
+                res = supabase.table(constants.TABLA_CONSULTA).insert(row_dic).execute()
 
-            print (row_dic)
-            # Insertar la fila en la tabla de Supabase
-            # res = supabase.table("nombre_tabla").insert(row).execute()
+            # Si todo sale bien, retornar un mensaje de éxito
+            return {
+                "status": 200,
+                "message": "Datos insertados en la Base de Datos exitosamente"
+            }
 
-            # # Verificar la respuesta
-            # if res.status_code == 201:
-            #     print(f"Fila {index} insertada correctamente.")
-            # else:
-            #print(f"Error al insertar la fila {index}: {res}")
-        return {
-            "status": 200,
-            "message": "Datos insertados en la Base de Datos exitosamente"
-        }
+        except Exception as e:
+            # Si ocurre un error, capturar la excepción y devolver un mensaje de error
+            return {
+                "status": 500,
+                "message": f"Error durante la inserción de datos: {str(e)}"
+            }
+    
     
     #Método de e.g. insertar usuario capa Infraestructura
     @staticmethod
