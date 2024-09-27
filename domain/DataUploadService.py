@@ -92,8 +92,9 @@ class DataUploadService:
             #Se renombra la columna de la fecha de la cita para que coincida con la tabla Rips
             monthly_df.rename(columns={'Fecha de la Cita': 'fecha de consulta'}, inplace=True)
 
-            # Reemplaza los valores en la columna 'Asunto' usando un diccionario
+            # Reemplaza los valores en la columna 'Asunto' y 'Ciudad' usando un diccionario
             monthly_df.replace({'Asunto': constants.VALORES_CORRECTOS}, inplace=True)
+            monthly_df.replace({'Ciudad': constants.VALORES_CORRECTOS}, inplace=True)
 
             #Join
             data = pd.merge(rips_df, monthly_df, on=['identificacion encriptada','fecha de consulta'],how='inner')

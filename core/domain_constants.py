@@ -39,7 +39,10 @@ VALORES_CORRECTOS = {
     'LAM COSMETICOS': 'LAM COSMETICS',
     'GESTIÓN HUMANA': 'GESTION HUMANA',
     'PARICULAR': 'PARTICULAR',
-    'NW STETIC S.A': 'NEW STETIC S.A'
+    'NW STETIC S.A': 'NEW STETIC S.A',
+    '143': 'Buenavista',
+    '167': 'Cajibío',
+    '43': 'Almeida'
 }
 
 
