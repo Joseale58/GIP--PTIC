@@ -10,6 +10,19 @@
 3. Instalar dependencias con `pip install -r requirements.txt`
 4. Levantar el API con `uvicorn main:app --reload`
 
+
+### Variables de entorno
+
+Necesario configurar las siguientes variables, para una correcta ejecución: 
+
+Tanto la URL como la KEY del API, son proveidas por Supabase:
+export SUPABASE_URL="my-url-to-my-awesome-supabase-instance"
+export SUPABASE_KEY="my-supa-dupa-secret-supabase-api-key"
+
+Ruta para guardar una muestra en excel de los datos que se subirán a Supabase:
+export LOCAL_URL_TO_EXCEL="C:/Users/usuario/Desktop/Folder/archivo.xlsx"
+
+
 ## Pasos para probar la aplicación desde local
 
 1. Instalar Postman o algún otro programa que te permita hacer peticiones (otra alternativa es Insomnia)
@@ -20,3 +33,4 @@
 5. Agregar una entrada del body llamada "monthly" y a este adjuntarle el equivalente pero del archivo que se llama "
    informe..."
 6. Enviar la petición
+
