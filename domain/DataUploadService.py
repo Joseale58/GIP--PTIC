@@ -13,10 +13,10 @@ class DataUploadService:
     def clean_data(rips_df: DataFrame, monthly_df: DataFrame):
 
         # Verificación de que las columnas necesarias existen
-        if len(rips_df.columns) != 15:
+        if len(rips_df.columns) != constants.COLUMNAS_RIPS:
             raise HTTPException(status_code=400, detail="Columnas faltantes en el archivo RIPS")
         
-        if len(monthly_df.columns) != 16:
+        if len(monthly_df.columns) != constants.COLUMNAS_MENSUAL:
             raise HTTPException(status_code=400, detail="Columnas faltantes en el archivo mensual")
         
         # Verificación de que las columnas necesarias existen
@@ -39,7 +39,7 @@ class DataUploadService:
         constants.VALOR_NETO_PAGAR
         ]
         
-        # Verificación de que todas las columnas existen en el DataFrame
+        # Verificación de que todas las columnas existen en el DataFrame de RIPS
         for col in required_columns_rips:
             if col not in rips_df.columns:
                 raise HTTPException(status_code=400, detail=f"Columna '{col}' no encontrada en el archivo RIPS")
@@ -63,7 +63,7 @@ class DataUploadService:
         constants.IDENTIFICACION_ENCRIPTADA  # Esta ya estaba definida, puedes reutilizarla
         ]
 
-        # Verificación de que todas las columnas existen en el DataFrame
+        # Verificación de que todas las columnas existen en el DataFrame mensual
         for col in required_columns_mensual:
             if col not in monthly_df.columns:
                 raise HTTPException(status_code=400, detail=f"Columna '{col}' no encontrada en el archivo Mensual")
@@ -88,13 +88,13 @@ class DataUploadService:
             monthly_df = monthly_df.drop('Tipo de Identificación del Paciente', axis=1)
             monthly_df = monthly_df.drop('Correo Electrónico', axis=1)
             monthly_df = monthly_df.drop('Dirección', axis=1)
+            monthly_df = monthly_df.drop('Ciudad', axis=1)
 
             #Se renombra la columna de la fecha de la cita para que coincida con la tabla Rips
             monthly_df.rename(columns={'Fecha de la Cita': 'fecha de consulta'}, inplace=True)
 
-            # Reemplaza los valores en la columna 'Asunto' y 'Ciudad' usando un diccionario
+            # Reemplaza los valores en la columna 'Asunto' usando un diccionario
             monthly_df.replace({'Asunto': constants.VALORES_CORRECTOS}, inplace=True)
-            monthly_df.replace({'Ciudad': constants.VALORES_CORRECTOS}, inplace=True)
 
             #Join
             data = pd.merge(rips_df, monthly_df, on=['identificacion encriptada','fecha de consulta'],how='inner')
@@ -103,7 +103,6 @@ class DataUploadService:
             data['tipo de identificacion']=data['tipo de identificacion'].astype('category')
             data['cod dx principal']=data['cod dx principal'].astype('category')
             data['identificacion encriptada']=data['identificacion encriptada'].astype('category')
-            data['Ciudad']=data['Ciudad'].astype('category')
             data['Barrio']=data['Barrio'].astype('category')
             data['Género']=data['Género'].astype('category')
             data['Asunto']=data['Asunto'].astype('category')
@@ -121,17 +120,11 @@ class DataUploadService:
             data = data.drop('valor de la consulta',axis=1)
             data = data.drop('valor cuota moderadora',axis=1)
             data = data.drop('valor neto a pagar',axis=1)
-            #print(data.info())
 
-            print("Llego hasta acá")
+            #Descripción de códigos CIE
             cie = CIECodes()
-            print("Que pasa acá")
-            print(cie.info(code='X511'))
-            print(cie.info(code='C02.0'))
 
-            cie_dict = {}
-
-            print(cie)
+            cie_dict = {} 
 
             for code, content in cie.tree.items():
                 full_info = cie.info(code=code)  # Cargar la propiedad 'multiple_descriptions'
@@ -147,10 +140,9 @@ class DataUploadService:
             data['fecha de consulta'] = pd.to_datetime(data['fecha de consulta'], format='%d/%m/%Y', errors='coerce')
             data['Fecha Nacimiento'] = pd.to_datetime(data['Fecha Nacimiento'], format='%d/%m/%Y', errors='coerce')
 
-            data.to_excel(url, index=False)
 
-            # Acá te mando los dos dataframes que se envían de los archivos de excel
-            # Leete el readme de como probar esto desde un postman
+            # Archivo opcional, para ver como queda el dataframe limpio
+            data.to_excel(url, index=False)
 
             return DataUploadRepository.insert(data)
         

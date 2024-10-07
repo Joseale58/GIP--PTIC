@@ -39,12 +39,12 @@ VALORES_CORRECTOS = {
     'LAM COSMETICOS': 'LAM COSMETICS',
     'GESTIÓN HUMANA': 'GESTION HUMANA',
     'PARICULAR': 'PARTICULAR',
-    'NW STETIC S.A': 'NEW STETIC S.A',
-    '143': 'Buenavista',
-    '167': 'Cajibío',
-    '43': 'Almeida'
+    'NW STETIC S.A': 'NEW STETIC S.A'
 }
 
+
+#Num columnas RIPS
+COLUMNAS_RIPS = 15
 
 #Columnas RIPS
 TIPO_IDENTIFICACION = "tipo de identificacion"
@@ -63,6 +63,9 @@ VALOR_CUOTA_MODERADORA = "valor cuota moderadora"
 VALOR_NETO_PAGAR = "valor neto a pagar"
 IDENTIFICACION_ENCRIPTADA = "identificacion encriptada"
 
+
+#Num columnas Mensual
+COLUMNAS_MENSUAL = 16
 #Columnas Mensual
 TIPO_IDENTIFICACION_PACIENTE = "Tipo de Identificación del Paciente"
 CIUDAD = "Ciudad"
@@ -79,3 +82,4 @@ FECHA_CITA = "Fecha de la Cita"
 ESTADO_CITA = "Estado de la Cita"
 TIPO_PROCEDIMIENTO = "Tipo de Procedimiento"
 TIPO_USUARIO = "Tipo de Usuario"
+
