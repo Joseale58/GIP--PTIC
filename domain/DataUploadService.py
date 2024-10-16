@@ -141,9 +141,6 @@ class DataUploadService:
             data['Fecha Nacimiento'] = pd.to_datetime(data['Fecha Nacimiento'], format='%d/%m/%Y', errors='coerce')
 
 
-            # Archivo opcional, para ver como queda el dataframe limpio
-            data.to_excel(url, index=False)
-
             return DataUploadRepository.insert(data)
         
         except Exception as e:
